@@ -1,40 +1,44 @@
 import json
-import urllib3
 import requests
-http = urllib3.PoolManager()
-from urllib.parse import urlencode
+import random
+import time
+
+
+randomitems = ["bayreuther", "weizen", "limo", "cola", "sprite", "bionade", "desperados", "cocktail", "longdrink", "shot", "salat", "currywurst", "nachos", "wrap", "pizza"]
+
 answers = {
-		"tableNumber": 1,
-		"randomAuthKey": "algkeiafe",
+		"tableNumber": random.randint(0,50),
+		"randomAuthKey": str(round(time.time()* 100000)),
 		"done": 0,
 		"boughtItems": [
 			{
-				"itemName": "Cola",
-				"itemPriceOne": 2,
-				"itemsBought": 2.50,
-				"itemPriceAll": 5.00
+				"itemName": randomitems[random.randint(0, 14)],
+				"itemPriceOne": random.randint(0,10),
+				"itemsBought": random.randint(0,10),
+				"itemPriceAll": random.randint(0, 100)
 			},
 			{
-				"itemName": "Salat",
-				"itemPriceOne": 2,
-				"itemsBought": 5.00,
-				"itemPriceAll": 10.00
+				"itemName": randomitems[random.randint(0, 14)],
+				"itemPriceOne": random.randint(0,10),
+				"itemsBought": random.randint(0,10),
+				"itemPriceAll": random.randint(0, 100)
 			},
 			{
-				"itemName": "Pizza",
-				"itemPriceOne": 2,
-				"itemsBought": 10,
-				"itemPriceAll": 20.00
+				"itemName": randomitems[random.randint(0, 14)],
+				"itemPriceOne": random.randint(0,10),
+				"itemsBought": random.randint(0,10),
+				"itemPriceAll": random.randint(0, 100)
 			}
 		],
 		"totalBill": 50
 	}
-encoded_args = urlencode({'auth': '1234'})
+print(answers)
+
 #encoded_data = json.dumps(answers).encode('utf-8')
 #print(encoded_data)
 #r = http.request(
-#    'POST',
+#    'post',
 #    'http://localhost:3000/create-new?'+encoded_args,
 #    body=encoded_data)
-headers = {'Content-type': 'application/json', 'Accept': 'text/plain'}
-r = requests.post("http://localhost:3000/create-new?"+encoded_args, data=json.dumps(answers), headers=headers)
+headers = {'content-type': 'application/json', 'accept': 'text/plain'}
+r = requests.post("http://localhost:3000/create-new?auth=1234",headers=headers, data=json.dumps(answers), )
