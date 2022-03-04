@@ -74,7 +74,7 @@ class WindowSelectQRCodeOrPrint():
     def __init__(self):
         self.window=tk.Tk()
         self.window.grid()
-        self.window.ButtonReturn = tk.Button(self.window, text = 'Zurück',command = self.btReturnToWindowMain, height = 3,width = 20).grid(row = 1, column = 1)
+        self.window.ButtonReturn = tk.Button(self.window, text = 'ZurÃ¼ck',command = self.btReturnToWindowMain, height = 3,width = 20).grid(row = 1, column = 1)
         self.window.ButtonShowQRCode = tk.Button(self.window, text = 'QR-Code anzeigen',command = self.btShowQRCode,  height = 20, width = 35).grid(row = 2, column = 2)
         self.window.ButtonPrint = tk.Button(self.window, text = 'Ausdrucken',command = self.btPrintBill, height = 20, width = 35).grid(row = 2, column = 3)
 
@@ -102,9 +102,14 @@ class WindowSelectQRCodeOrPrint():
         
         # DB connection and class initialized on startup in __main__ 
         sDBOrderID=str(self.sBillID)
-        
-        # test only not required here
-        sAPIHTTPURL= "http://DESKTOP-UMN87KA:3000/see/"+ str(sDBOrderID)
+        for i in billObjects:
+         if i["_id"] == sDBOrderID:
+           authkey = i["randomAuthKey"]
+           break
+
+
+        #generate URL with random autkey as value
+        sAPIHTTPURL= "http://DESKTOP-UMN87KA:3000/see/"+ str(sDBOrderID) + "?auth=" + authkey
         
         # print data on console_scripts
         print("Set URL to see bill to:" + str(sDBOrderID))
@@ -120,7 +125,7 @@ class WindowSelectQRCodeOrPrint():
         
         for i in billObjects:
             print(i)
-            if i["tableNumber"] == sDBOrderID:
+            if i["_id"] == sDBOrderID:
                 print(i["boughtItems"])
                 break
         updateDatabase(sDBOrderID)
@@ -181,7 +186,7 @@ class WindowQRCode():
         #image1 = tk.PhotoImage(file = "C:\Program Files\TestCode.png")
         #label1 = tk.Label(self.window, image=image1).grid(row = 1, column = 1)
         #__________________________________________________
-        self.window.ButtonReturn = tk.Button(self.window, text = 'Zurück',height = 3,width = 20, command = self.returnSelectQRCodeOrPrint).place(x = 250, y = 375)
+        self.window.ButtonReturn = tk.Button(self.window, text = 'ZurÃ¼ck',height = 3,width = 20, command = self.returnSelectQRCodeOrPrint).place(x = 250, y = 375)
         self.ButtonDone = tk.Button(self.window, text = 'Fertig',height = 3,width = 20, command =self.returnToMainMenu ).place(x = 400, y = 375)
         
     def returnToMainMenu(self):
