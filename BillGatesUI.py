@@ -12,14 +12,18 @@ import qrcode
 #import PIL for working with images
 from PIL import Image, ImageTk
 import os.path
+#import datetime to get current date
+import datetime
 #######################################################################
+global completeBillList
 
 #define http for requests
 http = urllib3.PoolManager()
 
 #initalise array which always contains newest bills
 billObjects = []
-
+r = http.request('GET', "http://DESKTOP-UMN87KA:3000/get-all?auth=1234")
+completeBillList = json.loads(r.data.decode('utf-8'))
 class WindowMain():
         
     def __init__(self):
@@ -34,11 +38,14 @@ class WindowMain():
         self.window = tk.Tk()
         self.window.grid()
 
-        for i in range(0, len(billObjects)):
-        # WaiterButton(frame, desc, identifier,row, col) Use object id as identifier                       
-            WaiterButton(self.window, "Table " + str(billObjects[i]["tableNumber"]), billObjects[i]["_id"],i,2)
-
-
+        #Check if Database is online and if there are any bills in it
+        if (billObjects != []):
+            for i in range(0, len(billObjects)):
+                # WaiterButton(frame, desc, identifier,row, col) Use object id as identifier                       
+                WaiterButton(self.window, "Table " + str(billObjects[i]["tableNumber"]), billObjects[i]["_id"],i,2)
+        else:
+              w = tk.Label(self.window, text = "No Bills found or Database not online")
+              w.grid(column = 2, row = 3)
         # padx 20pixel from border
         self.window.ButtonGetList=tk.Button(self.window, text = 'Liste Anzeigen',height = 3,width = 20,
                                             command = self.btGetCompleteList).grid(column = 1, row = 3,padx=20)
@@ -47,7 +54,9 @@ class WindowMain():
                                            
 
     def btGetCompleteList(self):
-        print('Event: btGetCompleteList')
+        self.destroyWindowMain()
+        x = CompleteListWindow()
+        x.runCompleteListWindow()
         
     def btReloadWaiterList(self):
         print('Event: Reload')
@@ -59,7 +68,7 @@ class WindowMain():
        
         self.window.title(" Rechnungen")
         # set hardcoded size of the window
-        #self.window.geometry('800x480')
+        self.window.geometry('800x480')
         self.window.mainloop()
 
     def destroyWindowMain(self):
@@ -97,15 +106,24 @@ class WindowSelectQRCodeOrPrint():
         x = WindowMain()
         x.runWindowMain()
     def btShowQRCode(self):
-        
+        global completeBillList
         print('Event: btShowQRCode')
         
-        # DB connection and class initialized on startup in __main__ 
+        #go thought short array first if id not found there search complete list array
         sDBOrderID=str(self.sBillID)
+        found = 0
         for i in billObjects:
-         if i["_id"] == sDBOrderID:
-           authkey = i["randomAuthKey"]
-           break
+            if i["_id"] == sDBOrderID:
+                found = 1
+                authkey = i["randomAuthKey"]
+                updateDatabase(sDBOrderID)
+                break
+        if (found == 0):
+            for i in completeBillList:
+                if i["_id"] == sDBOrderID:
+                    authkey = i["randomAuthKey"]
+                    updateDatabase(sDBOrderID)
+                    break 
 
 
         #generate URL with random autkey as value
@@ -119,16 +137,26 @@ class WindowSelectQRCodeOrPrint():
         x.runFrameQrCode()
         
     def btPrintBill(self):
-        print('Event: btPrintBill')
-  
-        sDBOrderID=self.sBillID
+        global completeBillList
+        print('Event: btShowQRCode')
         
+        #go thought short array first if id not found there search complete list array
+        sDBOrderID=str(self.sBillID)
+        found = 0
         for i in billObjects:
-            print(i)
             if i["_id"] == sDBOrderID:
-                print(i["boughtItems"])
+                found = 1
+                ########## ----------Print Function Here --------------------#################
+                print("I printed from small array")
+                updateDatabase(sDBOrderID)
                 break
-        updateDatabase(sDBOrderID)
+        if (found == 0):
+            for i in completeBillList:
+                if i["_id"] == sDBOrderID:
+                    print("I printed from big array")
+                    ###############----------------Print Function Here ------------#################
+                    updateDatabase(sDBOrderID)
+                    break 
     
 
         
@@ -223,6 +251,56 @@ class WindowQRCode():
     def quitWindowQRCode(self):
         self.window.destroy()
         self.window.quit()
+
+class CompleteListWindow():
+    def __init__(self):
+        self.window = tk.Tk()
+        global completeBillList
+        #get complete List from Database
+        r = http.request('GET', "http://DESKTOP-UMN87KA:3000/get-all?auth=1234")
+        completeBillList = json.loads(r.data.decode('utf-8'))
+        #create scrollbar for listbox
+        self.scrollBar = tk.Scrollbar(self.window)
+        self.scrollBar.grid(row = 0,column = 1)
+        #create Return Button
+        self.window.ButtonReturn = tk.Button(self.window, text = 'Zurück',height = 3,width = 20, command = self.returnToMainMenu).place(x = 250, y = 375)
+        #create list for items and link scrollbar to it
+        self.liBox = tk.Listbox(self.window, selectmode = tk.SINGLE, yscrollcommand = self.scrollBar.set)
+        #get todays date as string
+        t = datetime.datetime.now()
+        dateToday = t.strftime("%Y-%m-%d")
+        #add elements to listBox
+        for i in completeBillList:
+            print(i["created_at"][0:10])
+            print(dateToday)
+            if (dateToday[0:10] == i["created_at"][0:10]): #0:10 that only date is compared and not time
+                stringToDisplay =  "Tisch " + str(i["tableNumber"]) + " Time : " + i["created_at"][11:16]
+                self.liBox.insert(tk.END, stringToDisplay)
+        self.liBox.grid(row=0, column=0)
+        #add Button for Selecting the currently marked Bill
+        self.selBtn = tk.Button(self.window, text = "Bestätigen", command = self.selectElement)
+        self.selBtn.grid(row=1, column=0)
+       
+    def runCompleteListWindow(self):
+        self.window.title(" Rechnungen")
+        # set hardcoded size of the window
+        self.window.geometry('800x480')
+        self.window.mainloop()
+
+    def returnToMainMenu(self):
+        self.window.destroy()
+        self.window.quit()
+        x = WindowMain()
+        x.runWindowMain()
+
+    def selectElement(self):
+        selected = self.liBox.curselection()
+        if selected: # only do stuff if user made a selection
+            billID = completeBillList[int(selected[0])]["_id"] # get id of currently selected Table
+            x = WindowSelectQRCodeOrPrint()
+            x.runWindowSelectQRCodeOrPrint(billID)
+            self.window.destroy()
+            self.window.quit()
 
 
 def updateDatabase(billID):
