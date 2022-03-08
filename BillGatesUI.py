@@ -22,14 +22,14 @@ http = urllib3.PoolManager()
 
 #initalise array which always contains newest bills
 billObjects = []
-r = http.request('GET', "http://DESKTOP-UMN87KA:3000/get-all?auth=1234")
+r = http.request('GET', "https://billgatesprojekt.herokuapp.com/get-all?auth=1234")
 completeBillList = json.loads(r.data.decode('utf-8'))
 class WindowMain():
         
     def __init__(self):
 
         #location of get five newest of api merke http request sollte ein http:// vor den link -.-
-        r = http.request('GET', "http://DESKTOP-UMN87KA:3000/get?auth=1234")
+        r = http.request('GET', "https://billgatesprojekt.herokuapp.com/get?auth=1234")
 
         #parse json file in array of Python dictionaries
         global billObjects
@@ -127,7 +127,7 @@ class WindowSelectQRCodeOrPrint():
 
 
         #generate URL with random autkey as value
-        sAPIHTTPURL= "http://DESKTOP-UMN87KA:3000/see/"+ str(sDBOrderID) + "?auth=" + authkey
+        sAPIHTTPURL= "https://billgatesprojekt.herokuapp.com/see/"+ str(sDBOrderID) + "?auth=" + authkey
         
         # print data on console_scripts
         print("Set URL to see bill to:" + str(sDBOrderID))
@@ -257,7 +257,7 @@ class CompleteListWindow():
         self.window = tk.Tk()
         global completeBillList
         #get complete List from Database
-        r = http.request('GET', "http://DESKTOP-UMN87KA:3000/get-all?auth=1234")
+        r = http.request('GET', "https://billgatesprojekt.herokuapp.com/get-all?auth=1234")
         completeBillList = json.loads(r.data.decode('utf-8'))
         #create scrollbar for listbox
         self.scrollBar = tk.Scrollbar(self.window)
@@ -304,8 +304,8 @@ class CompleteListWindow():
 
 
 def updateDatabase(billID):
-    print("a request has been sent to http://DESKTOP-UMN87KA:3000/update/" + str(billID) + "?auth=1234")
-    http.request("GET", "http://DESKTOP-UMN87KA:3000/update/" + str(billID) + "?auth=1234")
+    print("a request has been sent to https://billgatesprojekt.herokuapp.com/update/" + str(billID) + "?auth=1234")
+    http.request("GET", "https://billgatesprojekt.herokuapp.com/update/" + str(billID) + "?auth=1234")
 
 
 if __name__ == "__main__":
