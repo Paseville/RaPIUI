@@ -365,19 +365,20 @@ def PrinterPrint(billID):
             Pay = Bill['totalBill']
             updateDatabase(sDBOrderID)
             for Item in Bill['boughtItems']:
-                printer.print(','.join(Item))
-                break
+                completeLine = Item['itemName'] + str(Item['itemPriceOne']) + Item['itemsBought'] + Item['itemPriceAll']
+                printer.print(completeLine)
+        break
+
     if (found == 0):
               completeBillList
               for i in completeBillList:
                 if i["_id"] == sDBOrderID:
                     Bill = i
                     for Item in Bill['boughtItems']:
-                        printer.print(','.join(Item))
-                        updateDatabase(sDBOrderID)
-                        break 
-
-             
+                        completeLine = Item['itemName'] + str(Item['itemPriceOne']) + Item['itemsBought'] + Item['itemPriceAll']
+                        printer.print(completeLine)
+                  
+                break
 
     printer.print("gesamt: ", "{:.2f}".format(Pay))
     printer.print("\nBezahlt: ", "{:.2f}".format(Pay))
