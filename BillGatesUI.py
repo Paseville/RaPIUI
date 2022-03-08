@@ -370,7 +370,11 @@ def PrinterPrint(billID):
             updateDatabase(sDBOrderID)
             for Item in Bill['boughtItems']:
                 print(Item)
-                completeLine = str(Item['itemName']).ljust(13) + str(Item['itemPriceOne']).ljust(7) +str(Item['itemsBought']).ljust(6) + str(Item['itemPriceAll'])
+                Name = str(Bill['itemName'])
+                price = str(Bill['itemPriceOne'])
+                count = str(Bill['itemsBought'])
+                total= str(Bill['itemPriceAll'])
+                completeLine = Name.ljust(13) + price.ljust(7) + count.ljust(6) + total
                 print(completeLine)
                 printer.print(completeLine)
             break
@@ -380,7 +384,7 @@ def PrinterPrint(billID):
                 if i["_id"] == sDBOrderID:
                     Bill = i
                     for Item in Bill['boughtItems']:
-                        completeLine = str(Item['itemName']).ljust(13) + str(Item['itemPriceOne']).ljust(7) +str(Item['itemsBought']).ljust(6) + str(Item['itemPriceAll'])
+                        completeLine = Name.ljust(13) + price.ljust(7) + count.ljust(6) + total
                         printer.print(completeLine)
                   
                     break
