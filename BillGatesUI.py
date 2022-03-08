@@ -335,6 +335,7 @@ def PrinterStart():
 
 def PrinterPrint(billID):
     #print(NotPrint)
+    Bill = []
     uart = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=3000)
     ThermalPrinter = adafruit_thermal_printer.get_printer_class(2.69)
     printer = ThermalPrinter(uart, auto_warm_up=False)
@@ -350,41 +351,45 @@ def PrinterPrint(billID):
     printer.print('Rechnung')
 
     printer.print(daytime())
-    printer.print('Bon.Nr.              Gerät\n-------------------------------\nBezeichnung Einzel Menge Gesamt\n-------------------------------')
+    printer.print('Bon.Nr.              Geraet\n-------------------------------\nBezeichnung Einzel Menge Gesamt\n-------------------------------')
 
     # Items printed
     
     
     sDBOrderID = billID
     found = 0
-
+    print(billObjects)
     for i in billObjects:
-        if i['_id'] == sDBOrderID:
+        print("Hello")
+        print(sDBOrderID)
+        print(i["_id"])
+        if (i['_id'] == sDBOrderID):
             found = 1
             Bill = i
             Pay = Bill['totalBill']
             updateDatabase(sDBOrderID)
             for Item in Bill['boughtItems']:
-                completeLine = Item['itemName'] + str(Item['itemPriceOne']) + Item['itemsBought'] + Item['itemPriceAll']
+                print(Item)
+                completeLine = str(Item['itemName']) + str(Item['itemPriceOne']) + str(Item['itemsBought']) + str(Item['itemPriceAll'])
+                print(completeLine)
                 printer.print(completeLine)
-        break
-
+            break
     if (found == 0):
               completeBillList
               for i in completeBillList:
                 if i["_id"] == sDBOrderID:
                     Bill = i
                     for Item in Bill['boughtItems']:
-                        completeLine = Item['itemName'] + str(Item['itemPriceOne']) + Item['itemsBought'] + Item['itemPriceAll']
+                        completeLine = str(Item['itemName'])+ "      " + str(Item['itemPriceOne']) +"       "+ str(Item['itemsBought']) + str(Item['itemPriceAll'])
                         printer.print(completeLine)
                   
-                break
+                    break
 
-    printer.print("gesamt: ", "{:.2f}".format(Pay))
-    printer.print("\nBezahlt: ", "{:.2f}".format(Pay))
+    #printer.print("gesamt: ", "{:.2f}".format(int(Bill["totalBill"])))
+    #.print("\nBezahlt: ", "{:.2f}".format(int(Bill["totalBill"])))
 
     # printed text continiued
-    printer.print("Es bedient: " + Bill['waiter'] + " Vielen Dank fuer Ihren Besuch!\nInhaber: Vorname Name")
+    #printer.print("Es bedient: " + Bill['waiter'] + " Vielen Dank fuer Ihren Besuch!\nInhaber: Vorname Name")
 
 
 if __name__ == "__main__":
