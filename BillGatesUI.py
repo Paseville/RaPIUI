@@ -10,7 +10,7 @@ import json
 #import qrcode to generate qr code from link
 import qrcode
 #import PIL for working with images
-from PIL import Image, ImageTk
+from PIL import *
 import os.path
 #import datetime to get current date
 import datetime
@@ -23,7 +23,7 @@ import adafruit_thermal_printer
 http = urllib3.PoolManager()
 
 #initalise array which always contains newest bills
-global billObjects = []
+global billObjects
 r = http.request('GET', "https://billgatesprojekt.herokuapp.com/get-all?auth=1234")
 completeBillList = json.loads(r.data.decode('utf-8'))
 class WindowMain():
@@ -335,13 +335,13 @@ def PrinterStart():
 
 def PrinterPrint(billID):
     #print(NotPrint)
-    uart = serial.Serial("/dev/serial0", baudrate=19200, timeout=3000)
+    uart = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=3000)
     ThermalPrinter = adafruit_thermal_printer.get_printer_class(2.69)
     printer = ThermalPrinter(uart, auto_warm_up=False)
     printer.warm_up()
     global billObjects
     global completeBillList
-    assert not NotPrint
+    # not NotPrint
 
     printer.print('Bill Gate`(s)\nGasthaus')
 
