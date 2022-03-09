@@ -117,13 +117,11 @@ class WindowSelectQRCodeOrPrint():
             if i["_id"] == sDBOrderID:
                 found = 1
                 authkey = i["randomAuthKey"]
-                updateDatabase(sDBOrderID)
                 break
         if (found == 0):
             for i in completeBillList:
                 if i["_id"] == sDBOrderID:
                     authkey = i["randomAuthKey"]
-                    updateDatabase(sDBOrderID)
                     break 
 
 
@@ -142,27 +140,7 @@ class WindowSelectQRCodeOrPrint():
     def btPrintBill(self):
         global completeBillList
         print('Event: btShowQRCode')
-        PrinterPrint(self.sBillID) #
-        ##go thought short array first if id not found there search complete list array
-        #sDBOrderID=str(self.sBillID)
-        #found = 0
-        #for i in billObjects:
-        #    if i["_id"] == sDBOrderID:
-        #        found = 1
-        #        ########## ----------Print Function Here --------------------#################
-        #        print("I printed from small array")
-        #        updateDatabase(sDBOrderID)
-        #        break
-        #if (found == 0):
-        #    for i in completeBillList:
-        #        if i["_id"] == sDBOrderID:
-        #            print("I printed from big array")
-        #            ###############----------------Print Function Here ------------#################
-        #            updateDatabase(sDBOrderID)
-        #            break 
-    
-
-        
+        PrinterPrint(self.sBillID) 
         self.btReturnToWindowMain()
 
 class WaiterButton():
@@ -332,7 +310,7 @@ def PrinterStart():
         NotPrint = True
 
 
-
+#prints bill with billID (searches both arrays from database completeArray and billObjects)
 def PrinterPrint(billID):
     #print(NotPrint)
     Bill = []
@@ -359,6 +337,7 @@ def PrinterPrint(billID):
     sDBOrderID = billID
     found = 0
     print(billObjects)
+    #Go through small array first to find bill, if not in there search big array
     for i in billObjects:
         print("Hello")
         print(sDBOrderID)
@@ -374,6 +353,7 @@ def PrinterPrint(billID):
                 price = str(Item['itemPriceOne'])
                 count = str(Item['itemsBought'])
                 total= str(Item['itemPriceAll'])
+                #ljust for formatting the bill
                 completeLine = Name.ljust(13) + price.ljust(7) + count.ljust(6) + total
                 print(completeLine)
                 printer.print(completeLine)
