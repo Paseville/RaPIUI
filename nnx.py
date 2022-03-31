@@ -10,14 +10,27 @@ randomitems = ["Bayreuther", "Weizen", "Limo", "Cola", "Sprite", "Bionade", "Des
 for x in range(10):
 	arrayItems = []
 	totalBill = 0
+	
 	#for each bill generate random amount of items bought
+	usedItems = ["m"]
 	for x in range(random.randint(1,9)):
+		while (1):
+			foundName = 0
+			itemName = randomitems[random.randint(0,14)]
+			for x in usedItems:
+				if(x == itemName):
+					foundName = 1
+			
+			if(foundName == 0):
+				usedItems.append(itemName)
+				break
+		#make sure each itemName only appears once in 
 		priceOne = random.randint(1,10)
 		itemsBought = random.randint(0,10)
 		priceAll = priceOne * itemsBought
 		totalBill += priceAll
 		oneItem = {
-			"itemName": randomitems[random.randint(0,14)],
+			"itemName": itemName,
 			"itemPriceOne": priceOne,
 			"itemsBought" : itemsBought,
 			"itemPriceAll": priceAll
