@@ -174,7 +174,7 @@ class WindowQRCode():
                     back_color = 'white')
   
         # image filename
-        sQRFile="c:/temp/qrcode.png"               
+        sQRFile="/home/pi/Desktop/qrcode.png"               
         img.save(sQRFile)
       
         if (os.path.exists(sQRFile)==False):
@@ -324,12 +324,12 @@ def PrinterPrint(billID):
 
     printer.print('Bill Gate`(s)\nGasthaus')
 
-    printer.print('-------------------------------\nStr. Nr., PLZ Stadt\nWebsite\nTel.')
+    # printer.print('-------------------------------\nStr. Nr., PLZ Stadt\nWebsite\nTel.')
 
     printer.print('Rechnung')
 
     printer.print(daytime())
-    printer.print('Bon.Nr.              Geraet\n-------------------------------\nName Einzel Menge Gesamt\n-------------------------------')
+    printer.print('Bon.Nr.              Geraet\n-------------------------------\nName One Menge tot\n-------------------------------')
 
     # Items printed
     
@@ -350,11 +350,11 @@ def PrinterPrint(billID):
             for Item in Bill['boughtItems']:
                 print(Item)
                 Name = Item['itemName']
-                price = str(Item['itemPriceOne'])
+                price = str(Item['itemPriceOne']) + "€"
                 count = str(Item['itemsBought'])
-                total= str(Item['itemPriceAll'])
+                total= str(Item['itemPriceAll'])+ "€"
                 #ljust for formatting the bill
-                completeLine = Name.ljust(13) + price.ljust(7) + count.ljust(6) + total
+                completeLine = Name.ljust(13) + price.ljust(6) + count.ljust(6) + total
                 print(completeLine)
                 printer.print(completeLine)
             break
