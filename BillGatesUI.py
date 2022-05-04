@@ -329,7 +329,7 @@ def PrinterPrint(billID):
     printer.print('Rechnung')
 
     printer.print(daytime())
-    printer.print('Bon.Nr.              Geraet\n-------------------------------\nName One Menge tot\n-------------------------------')
+    printer.print('Bon.Nr.              Geraet\n-------------------------------\nName        One       Menge tot\n-------------------------------')
 
     # Items printed
     
