@@ -314,7 +314,7 @@ def PrinterStart():
 def PrinterPrint(billID):
     #print(NotPrint)
     Bill = []
-    uart = serial.Serial("/dev/ttyUSB0", baudrate=19200, timeout=3000)
+    uart = serial.Serial("/dev/serial0", baudrate=19200, timeout=3000)
     ThermalPrinter = adafruit_thermal_printer.get_printer_class(2.69)
     printer = ThermalPrinter(uart, auto_warm_up=False)
     printer.warm_up()
@@ -329,7 +329,7 @@ def PrinterPrint(billID):
     printer.print('Rechnung')
 
     printer.print(daytime())
-    printer.print('Bon.Nr.              Geraet\n-------------------------------\nBezeichnung Einzel Menge Gesamt\n-------------------------------')
+    printer.print('Bon.Nr.              Geraet\n-------------------------------\nName Einzel Menge Gesamt\n-------------------------------')
 
     # Items printed
     
