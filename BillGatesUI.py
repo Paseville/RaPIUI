@@ -350,9 +350,9 @@ def PrinterPrint(billID):
             for Item in Bill['boughtItems']:
                 print(Item)
                 Name = Item['itemName']
-                price = str(Item['itemPriceOne']) + "€"
+                price = str(Item['itemPriceOne']) + "$"
                 count = str(Item['itemsBought'])
-                total= str(Item['itemPriceAll'])+ "€"
+                total= str(Item['itemPriceAll'])+ "$"
                 #ljust for formatting the bill
                 completeLine = Name.ljust(13) + price.ljust(6) + count.ljust(6) + total
                 print(completeLine)
