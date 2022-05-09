@@ -324,12 +324,12 @@ def PrinterPrint(billID):
 
     printer.print('Bill Gate`(s)\nGasthaus')
 
-    # printer.print('-------------------------------\nStr. Nr., PLZ Stadt\nWebsite\nTel.')
+    # printer.print('-------------------------------\nStr. Adolf-Ley-Straße Nr.6\nPLZ: 97424 Stadt: Schweinfurt\nTel. 0972128704')
 
     printer.print('Rechnung')
 
     printer.print(daytime())
-    printer.print('Bon.Nr.              Geraet\n-------------------------------\nName        One    Menge tot\n-------------------------------')
+    printer.print('Bon.Nr.              Device 1\n-------------------------------\nBezeichnung Einzel Menge Gesamt\n-------------------------------')
 
     # Items printed
     
@@ -349,14 +349,38 @@ def PrinterPrint(billID):
             updateDatabase(sDBOrderID)
             for Item in Bill['boughtItems']:
                 print(Item)
-                Name = Item['itemName']
+                name = Item['itemName']
                 price = str(Item['itemPriceOne']) + "$"
                 count = str(Item['itemsBought'])
                 total= str(Item['itemPriceAll'])+ "$"
                 #ljust for formatting the bill
-                completeLine = Name.ljust(13) + price.ljust(6) + count.ljust(6) + total
+                #format to display orderly to display the corresponding decimal places under each other
+                if (len(str(Item['itemPriceOne']) == 1):
+                    name = name.ljust(16)
+                elif (len(str(Item['itemPriceOne']) == 2):
+                      name = name.ljust(15)
+                elif (len(str(Item['itemPriceOne']) == 3):
+                      name = name.ljust(14)
+                else:
+                      name = name.ljust(13) #13 was normall before formatting
+                #Do the same for count
+                if (len(str(Item['count']) == 1):
+                    price=price.ljust(7)
+                else:
+                    price=price.ljust(6)
+                #Now do the same for the total
+                if (len(str(Item['total']) == 1):
+                    count = count.ljust(9)
+                elif (len(str(Item['total']) == 2):
+                      count = count.ljust(8)
+                elif (len(str(Item['total']) == 3):
+                      count = count.ljust(7)
+                else:
+                      count = count.ljust(6) #6 was normall before formatting
+                completeLine = name + price + count + total
                 print(completeLine)
                 printer.print(completeLine)
+                printer.print("Tischnummer: " + Item['tableNumber'])
             break
     if (found == 0):
               completeBillList
@@ -364,20 +388,45 @@ def PrinterPrint(billID):
                 if i["_id"] == sDBOrderID:
                     Bill = i
                     for Item in Bill['boughtItems']:
-                        Name = Item['itemName']
-                        price = str(Item['itemPriceOne'])
+                        name = Item['itemName']
+                        price = str(Item['itemPriceOne']) + "$"
                         count = str(Item['itemsBought'])
-                        total= str(Item['itemPriceAll'])
-                        completeLine = Name.ljust(13) + price.ljust(7) + count.ljust(6) + total
+                        total= str(Item['itemPriceAll'])+ "$"
+                        #ljust for formatting the bill
+                        #format to display orderly to display the corresponding decimal places under each other
+                        if (len(str(Item['itemPriceOne']) == 1):
+                            name = name.ljust(16)
+                        elif (len(str(Item['itemPriceOne']) == 2):
+                              name = name.ljust(15)
+                        elif (len(str(Item['itemPriceOne']) == 3):
+                              name = name.ljust(14)
+                        else:
+                              name = name.ljust(13) #13 was normall before formatting
+                        #Do the same for count
+                        if (len(str(Item['count']) == 1):
+                            price=price.ljust(7)
+                        else:
+                            price=price.ljust(6)
+                        #Now do the same for the total
+                        if (len(str(Item['total']) == 1):
+                            count = count.ljust(9)
+                        elif (len(str(Item['total']) == 2):
+                              count = count.ljust(8)
+                        elif (len(str(Item['total']) == 3):
+                              count = count.ljust(7)
+                        else:
+                              count = count.ljust(6) #6 was normall before formatting
+                        completeLine = name + price + count + total
+                        print(completeLine)
                         printer.print(completeLine)
-                  
+                        printer.print("Tischnummer: " + Item['tableNumber'])
                     break
+      
+    printer.print("\ngesamt: " + "{:.2f}".format(Bill["totalBill"]))
+    #printer.print("\nBezahlt: " + "{:.2f}".format(Bill["totalBill"]))
 
-    #printer.print("gesamt: ", "{:.2f}".format(int(Bill["totalBill"])))
-    #.print("\nBezahlt: ", "{:.2f}".format(int(Bill["totalBill"])))
-
-    # printed text continiued
-    #printer.print("Es bedient: " + Bill['waiter'] + " Vielen Dank fuer Ihren Besuch!\nInhaber: Vorname Name")
+    # printed text 
+    #printer.print("Es bedient: " + Bill['waiter'] + " Vielen Dank fuer Ihren Besuch!")
 
 
 if __name__ == "__main__":
