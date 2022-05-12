@@ -371,7 +371,7 @@ def PrinterPrint(billID):
 
 def adjustFormatting(Item):
                  priceSpaces = "------" #default 6 Spaces
-                 countSpaces = "------" #default 6 Spaces
+                 countSpaces = "-----" #default 5 Spaces
                  name = Item['itemName']
                  price = str(Item['itemPriceOne']) + "$"
                  count = str(Item['itemsBought'])
@@ -379,23 +379,23 @@ def adjustFormatting(Item):
                  #ljust for formatting the bill
                  #format to display orderly to display the corresponding decimal places under each other
                  if (len(str(Item['itemPriceOne'])) == 1):
-                     name = name.ljust(13, '-')
-                 elif (len(str(Item['itemPriceOne'])) == 2):
                      name = name.ljust(12, '-')
-                 elif (len(str(Item['itemPriceOne'])) == 3):
+                 elif (len(str(Item['itemPriceOne'])) == 2):
                      name = name.ljust(11, '-')
+                 elif (len(str(Item['itemPriceOne'])) == 3):
+                     name = name.ljust(10, '-')
                  else:
-                     name = name.ljust(10) #13 was normall before formatting
+                     name = name.ljust(9) #13 was normall before formatting
                  #Do the same for count
                  if (len(str(Item['itemsBought'])) == 1):
                      priceSpaces=priceSpaces.ljust(7, '-')
                  #Now do the same for the total
                  if (len(str(Item['itemPriceAll'])) == 1):
-                     countSpaces = countSpaces.ljust(9, '-')
+                     countSpaces = countSpaces.ljust(6, '-')
                  elif (len(str(Item['itemPriceAll'])) == 2):
-                     countSpaces = countSpaces.ljust(8, '-')
+                     countSpaces = countSpaces.ljust(5, '-')
                  elif (len(str(Item['itemPriceAll'])) == 3):
-                     countSpaces = count.ljust(7, '-')
+                     countSpaces = count.ljust(4, '-')
                  completeLine = name + price + priceSpaces + count + countSpaces + total
                  return completeLine
                         
