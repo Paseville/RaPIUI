@@ -388,15 +388,19 @@ def adjustFormatting(Item):
                      name = name.ljust(10) #13 was normall before formatting
                  #Do the same for count
                  if (len(str(Item['itemsBought'])) == 1):
-                     priceSpaces=priceSpaces.ljust(7)
+                     price=price.rjust(7)
+                 else: 
+                     price = price.rjust(6)
                  #Now do the same for the total
                  if (len(str(Item['itemPriceAll'])) == 1):
-                     countSpaces = countSpaces.ljust(9)
+                     count = count.rjust(9)
                  elif (len(str(Item['itemPriceAll'])) == 2):
-                     countSpaces = countSpaces.ljust(8)
+                     count = count.rjust(8)
                  elif (len(str(Item['itemPriceAll'])) == 3):
-                     countSpaces = countSpaces.ljust(7)
-                 completeLine = name + price + priceSpaces + count + countSpaces + total
+                     count = count.rjust(7)
+                 else:
+                     count = count.rjust(6)
+                 completeLine = name + price + count + total
                  return completeLine
                         
  
