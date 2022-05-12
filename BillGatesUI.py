@@ -333,7 +333,7 @@ def PrinterPrint(billID):
     printer.print('Rechnung')
 
     printer.print(daytime())
-    printer.print('Bon.Nr.              Device 1\n-------------------------------\nBezeichnung Einzel Menge Gesamt\n-------------------------------')
+    printer.print('Bon.Nr.                Device 1\n-------------------------------\nBezeichnung Einzel Menge Gesamt\n-------------------------------')
 
     # Items printed
     
@@ -424,8 +424,8 @@ def PrinterPrint(billID):
                         printer.print(completeLine)
                         
                     break
-    printer.print("Tischnummer: " + str(Bill['tableNumber']))
-    printer.print("\ngesamt: " + "{:.2f}".format(Bill["totalBill"]))
+    printer.print("\nTischnummer: " + str(Bill['tableNumber']))
+    printer.print("\nGesamt: " + "{:.2f}".format(Bill["totalBill"]) + "$")
     #printer.print("\nBezahlt: " + "{:.2f}".format(Bill["totalBill"]))
 
     # printed text 
