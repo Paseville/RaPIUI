@@ -360,13 +360,13 @@ def PrinterPrint(billID):
                 #ljust for formatting the bill
                 #format to display orderly to display the corresponding decimal places under each other
                 if (len(str(Item['itemPriceOne'])) == 1):
-                      name = name.ljust(16)
+                      name = name.ljust(13)
                 elif (len(str(Item['itemPriceOne'])) == 2):
-                      name = name.ljust(15)
+                      name = name.ljust(12)
                 elif (len(str(Item['itemPriceOne'])) == 3):
-                      name = name.ljust(14)
+                      name = name.ljust(11)
                 else:
-                      name = name.ljust(13) #13 was normall before formatting
+                      name = name.ljust(10) #13 was normall before formatting
                 #Do the same for count
                 if (len(str(Item['itemsBought'])) == 1):
                     price=price.ljust(7)
@@ -384,7 +384,6 @@ def PrinterPrint(billID):
                 completeLine = name + price + count + total
                 print(completeLine)
                 printer.print(completeLine)
-                printer.print("Tischnummer: " + Item['tableNumber'])
             break
     if (found == 0):
               completeBillList
@@ -399,13 +398,13 @@ def PrinterPrint(billID):
                         #ljust for formatting the bill
                         #format to display orderly to display the corresponding decimal places under each other
                         if (len(str(Item['itemPriceOne'])) == 1):
-                            name = name.ljust(16)
+                            name = name.ljust(13)
                         elif (len(str(Item['itemPriceOne'])) == 2):
-                              name = name.ljust(15)
+                              name = name.ljust(12)
                         elif (len(str(Item['itemPriceOne'])) == 3):
-                              name = name.ljust(14)
+                              name = name.ljust(11)
                         else:
-                              name = name.ljust(13) #13 was normall before formatting
+                              name = name.ljust(10) #13 was normall before formatting
                         #Do the same for count
                         if (len(str(Item['itemsBought'])) == 1):
                             price=price.ljust(7)
@@ -423,9 +422,9 @@ def PrinterPrint(billID):
                         completeLine = name + price + count + total
                         print(completeLine)
                         printer.print(completeLine)
-                        printer.print("Tischnummer: " + Item['tableNumber'])
+                        
                     break
-      
+    printer.print("Tischnummer: " + str(Bill['tableNumber']))
     printer.print("\ngesamt: " + "{:.2f}".format(Bill["totalBill"]))
     #printer.print("\nBezahlt: " + "{:.2f}".format(Bill["totalBill"]))
 
