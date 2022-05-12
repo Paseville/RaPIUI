@@ -370,8 +370,8 @@ def PrinterPrint(billID):
     #printer.print("Es bedient: " + Bill['waiter'] + " Vielen Dank fuer Ihren Besuch!")
 
 def adjustFormatting(Item):
-                 priceSpaces = "      " #default 6 Spaces
-                 countSpaces = "      " #default 6 Spaces
+                 priceSpaces = "------" #default 6 Spaces
+                 countSpaces = "------" #default 6 Spaces
                  name = Item['itemName']
                  price = str(Item['itemPriceOne']) + "$"
                  count = str(Item['itemsBought'])
@@ -379,28 +379,24 @@ def adjustFormatting(Item):
                  #ljust for formatting the bill
                  #format to display orderly to display the corresponding decimal places under each other
                  if (len(str(Item['itemPriceOne'])) == 1):
-                     name = name.ljust(13)
+                     name = name.ljust(13, '-')
                  elif (len(str(Item['itemPriceOne'])) == 2):
-                     name = name.ljust(12)
+                     name = name.ljust(12, '-')
                  elif (len(str(Item['itemPriceOne'])) == 3):
-                     name = name.ljust(11)
+                     name = name.ljust(11, '-')
                  else:
                      name = name.ljust(10) #13 was normall before formatting
                  #Do the same for count
                  if (len(str(Item['itemsBought'])) == 1):
-                     price=price.rjust(7)
-                 else: 
-                     price = price.rjust(6)
+                     priceSpaces=priceSpaces.ljust(7, '-')
                  #Now do the same for the total
                  if (len(str(Item['itemPriceAll'])) == 1):
-                     count = count.rjust(9)
+                     countSpaces = countSpaces.ljust(9, '-')
                  elif (len(str(Item['itemPriceAll'])) == 2):
-                     count = count.rjust(8)
+                     countSpaces = countSpaces.ljust(8, '-')
                  elif (len(str(Item['itemPriceAll'])) == 3):
-                     count = count.rjust(7)
-                 else:
-                     count = count.rjust(6)
-                 completeLine = name + price + count + total
+                     countSpaces = count.ljust(7, '-')
+                 completeLine = name + price + priceSpaces + count + countSpaces + total
                  return completeLine
                         
  
