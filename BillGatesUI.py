@@ -349,18 +349,18 @@ def PrinterPrint(billID):
         if (i['_id'] == sDBOrderID):
             found = 1
             Bill = i
-            for i in Bill['boughtItems']:
+            for x in Bill['boughtItems']:
                 Pay = Bill['totalBill']
                 updateDatabase(sDBOrderID)
-                printer.print(adjustFormatting(i))
+                printer.print(adjustFormatting(x))
             break
         if (found == 0):
               global completeBillList
               for i in completeBillList:
                 if i["_id"] == sDBOrderID:
                     Bill = i
-                    for i in Bill['boughtItems']:
-                        printer.print(adjustFormatting(i))
+                    for x in Bill['boughtItems']:
+                        printer.print(adjustFormatting(x))
                     break
     printer.print("\nTischnummer: " + str(Bill['tableNumber']))
     printer.print("\nGesamt: " + "{:.2f}".format(Bill["totalBill"]) + "$\n\n\n\n\n")
