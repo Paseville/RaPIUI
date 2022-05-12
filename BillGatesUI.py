@@ -360,7 +360,7 @@ def PrinterPrint(billID):
                 #ljust for formatting the bill
                 #format to display orderly to display the corresponding decimal places under each other
                 if (len(str(Item['itemPriceOne'])) == 1):
-                    name = name.ljust(16)
+                      name = name.ljust(16)
                 elif (len(str(Item['itemPriceOne'])) == 2):
                       name = name.ljust(15)
                 elif (len(str(Item['itemPriceOne'])) == 3):
@@ -368,16 +368,16 @@ def PrinterPrint(billID):
                 else:
                       name = name.ljust(13) #13 was normall before formatting
                 #Do the same for count
-                if (len(str(Item['count'])) == 1):
+                if (len(str(Item['itemsBought'])) == 1):
                     price=price.ljust(7)
                 else:
                     price=price.ljust(6)
                 #Now do the same for the total
-                if (len(str(Item['total'])) == 1):
+                if (len(str(Item['itemPriceAll'])) == 1):
                     count = count.ljust(9)
-                elif (len(str(Item['total'])) == 2):
+                elif (len(str(Item['itemPriceAll'])) == 2):
                       count = count.ljust(8)
-                elif (len(str(Item['total'])) == 3):
+                elif (len(str(Item['itemPriceAll'])) == 3):
                       count = count.ljust(7)
                 else:
                       count = count.ljust(6) #6 was normall before formatting
@@ -407,16 +407,16 @@ def PrinterPrint(billID):
                         else:
                               name = name.ljust(13) #13 was normall before formatting
                         #Do the same for count
-                        if (len(str(Item['count'])) == 1):
+                        if (len(str(Item['itemsBought'])) == 1):
                             price=price.ljust(7)
                         else:
                             price=price.ljust(6)
                         #Now do the same for the total
-                        if (len(str(Item['total'])) == 1):
+                        if (len(str(Item['itemPriceAll'])) == 1):
                             count = count.ljust(9)
-                        elif (len(str(Item['total'])) == 2):
+                        elif (len(str(Item['itemPriceAll'])) == 2):
                               count = count.ljust(8)
-                        elif (len(str(Item['total'])) == 3):
+                        elif (len(str(Item['itemPriceAll'])) == 3):
                               count = count.ljust(7)
                         else:
                               count = count.ljust(6) #6 was normall before formatting
