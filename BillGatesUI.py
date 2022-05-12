@@ -255,7 +255,11 @@ class CompleteListWindow():
             print(i["created_at"][0:10])
             print(dateToday)
             if (dateToday[0:10] == i["created_at"][0:10]): #0:10 that only date is compared and not time
-                stringToDisplay =  "Tisch " + str(i["tableNumber"]) + " Time : " + i["created_at"][11:16]
+                aSplitted = i["created_at"][11:16].split(":")
+                iHours = int(aSplitted[0])
+                iMinutes = int(aSplitted[1])
+                iHours += 2
+                stringToDisplay =  "Tisch " + str(i["tableNumber"]) + " Time : " + str(iHours) + ":" + str(iMinutes)
                 self.liBox.insert(tk.END, stringToDisplay)
         self.liBox.grid(row=0, column=0)
         #add Button for Selecting the currently marked Bill
