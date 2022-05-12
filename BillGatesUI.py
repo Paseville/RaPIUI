@@ -349,16 +349,18 @@ def PrinterPrint(billID):
         if (i['_id'] == sDBOrderID):
             found = 1
             Bill = i
-            Pay = Bill['totalBill']
-            updateDatabase(sDBOrderID)
-            printer.print(adjustFormatting(Bill))
+            for i in Bill['boughtItems']:
+                Pay = Bill['totalBill']
+                updateDatabase(sDBOrderID)
+                printer.print(adjustFormatting(i))
             break
         if (found == 0):
               global completeBillList
               for i in completeBillList:
                 if i["_id"] == sDBOrderID:
                     Bill = i
-                    printer.print(adjustFormatting(Bill))
+                    for i in Bill['boughtItems']:
+                        printer.print(adjustFormatting(i))
                     break
     printer.print("\nTischnummer: " + str(Bill['tableNumber']))
     printer.print("\nGesamt: " + "{:.2f}".format(Bill["totalBill"]) + "$\n\n\n\n\n")
@@ -367,36 +369,35 @@ def PrinterPrint(billID):
     # printed text 
     #printer.print("Es bedient: " + Bill['waiter'] + " Vielen Dank fuer Ihren Besuch!")
 
-def adjustFormatting(Bill):
+def adjustFormatting(Item):
                  priceSpaces = "      " #default 6 Spaces
                  countSpaces = "      " #default 6 Spaces
-                 for Item in Bill['boughtItems']:
-                        name = Item['itemName']
-                        price = str(Item['itemPriceOne']) + "$"
-                        count = str(Item['itemsBought'])
-                        total= str(Item['itemPriceAll'])+ "$"
-                        #ljust for formatting the bill
-                        #format to display orderly to display the corresponding decimal places under each other
-                        if (len(str(Item['itemPriceOne'])) == 1):
-                            name = name.ljust(13)
-                        elif (len(str(Item['itemPriceOne'])) == 2):
-                              name = name.ljust(12)
-                        elif (len(str(Item['itemPriceOne'])) == 3):
-                              name = name.ljust(11)
-                        else:
-                              name = name.ljust(10) #13 was normall before formatting
-                        #Do the same for count
-                        if (len(str(Item['itemsBought'])) == 1):
-                            priceSpaces=priceSpaces.ljust(1)
-                        #Now do the same for the total
-                        if (len(str(Item['itemPriceAll'])) == 1):
-                            countSpaces = countSpaces.ljust(3)
-                        elif (len(str(Item['itemPriceAll'])) == 2):
-                              countSpaces = countSpaces.ljust(2)
-                        elif (len(str(Item['itemPriceAll'])) == 3):
-                              countSpaces = countSpaces.ljust(1)
-                        completeLine = name + price + priceSpaces + count + countSpaces + total
-                        return completeLine
+                 name = Item['itemName']
+                 price = str(Item['itemPriceOne']) + "$"
+                 count = str(Item['itemsBought'])
+                 total= str(Item['itemPriceAll'])+ "$"
+                 #ljust for formatting the bill
+                 #format to display orderly to display the corresponding decimal places under each other
+                 if (len(str(Item['itemPriceOne'])) == 1):
+                     name = name.ljust(13)
+                 elif (len(str(Item['itemPriceOne'])) == 2):
+                     name = name.ljust(12)
+                 elif (len(str(Item['itemPriceOne'])) == 3):
+                     name = name.ljust(11)
+                 else:
+                     name = name.ljust(10) #13 was normall before formatting
+                 #Do the same for count
+                 if (len(str(Item['itemsBought'])) == 1):
+                     priceSpaces=priceSpaces.ljust(1)
+                 #Now do the same for the total
+                 if (len(str(Item['itemPriceAll'])) == 1):
+                     countSpaces = countSpaces.ljust(3)
+                 elif (len(str(Item['itemPriceAll'])) == 2):
+                     countSpaces = countSpaces.ljust(2)
+                 elif (len(str(Item['itemPriceAll'])) == 3):
+                     countSpaces = countSpaces.ljust(1)
+                 completeLine = name + price + priceSpaces + count + countSpaces + total
+                 return completeLine
                         
  
 if __name__ == "__main__":
