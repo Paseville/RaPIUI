@@ -2,7 +2,6 @@
 #required libs: urllib3, json
 ###########################imports#########################################
 #import urllib3 to send request
-from typing import type_check_only
 import urllib3
 #import tk for user interface
 import tkinter as tk
@@ -397,7 +396,7 @@ def adjustFormatting(Bill):
                         elif (len(str(Item['itemPriceAll'])) == 3):
                               countSpaces = countSpaces.ljust(1)
                         completeLine = name + price + priceSpaces + count + countSpaces + total
-                        print(completeLine)
+                        return completeLine
                         
  
 if __name__ == "__main__":
