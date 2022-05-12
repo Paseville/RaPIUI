@@ -249,7 +249,8 @@ class CompleteListWindow():
         self.liBox = tk.Listbox(self.window, selectmode = tk.SINGLE, yscrollcommand = self.scrollBar.set)
         #get todays date as string
         t = datetime.datetime.now()
-        dateToday = t.strftime("%Y-%m-%d")
+        rightTimetoCompare = t - datetime.timedelta(hours=2)
+        dateToday = rightTimetoCompare.strftime("%Y-%m-%d")
         #add elements to listBox
         for i in completeBillList:
             print(i["created_at"][0:10])
@@ -270,7 +271,7 @@ class CompleteListWindow():
         self.window.title(" Rechnungen")
         # set hardcoded size of the window
         self.window.geometry('800x480')
-        self.window.mainloop()
+     
 
     def returnToMainMenu(self):
         self.window.destroy()
