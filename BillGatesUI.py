@@ -379,17 +379,17 @@ def adjustFormatting(Item):
                  #ljust for formatting the bill
                  #format to display orderly to display the corresponding decimal places under each other
                  if (len(str(Item['itemPriceOne'])) == 1):
-                     name = name.ljust(12, '-')
+                     name = name.ljust(16)
                  elif (len(str(Item['itemPriceOne'])) == 2):
-                     name = name.ljust(11, '-')
+                     name = name.ljust(15)
                  elif (len(str(Item['itemPriceOne'])) == 3):
-                     name = name.ljust(10, '-')
+                     name = name.ljust(14)
                  else:
-                     name = name.ljust(9) #13 was normall before formatting
+                     name = name.ljust(13) #13 was normall before formatting
                  
                  #Now do the same for the total
-                 count = count.rjust(6, '-')
-                 total = total.rjust(7, '-')
+                 count = count.rjust(6)
+                 total = total.rjust(7)
                  completeLine = name + price  + count  + total
                  return completeLine
                         
