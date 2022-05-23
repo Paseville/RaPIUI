@@ -14,14 +14,22 @@ from PIL import *
 import os.path
 #import datetime to get current date
 import datetime
-#######################################################################
+
+## #########################init printer#########################
+global printer 
+global ThermalPrinter
 global completeBillList
+global uart
+uart = serial.Serial("/dev/serial0", baudrate=19200, timeout=3000)
+ThermalPrinter = adafruit_thermal_printer.get_printer_class(2.69)
+printer = ThermalPrinter(uart, auto_warm_up=False)
+printer.warm_up()
 notPrint = False
+######################################################
 import serial
 import adafruit_thermal_printer
 #define http for requests
 http = urllib3.PoolManager()
-
 #initalise array which always contains newest bills
 global billObjects
 r = http.request('GET', "https://billgatesprojekt.herokuapp.com/get-all?auth=1234")
@@ -319,12 +327,11 @@ def PrinterStart():
 def PrinterPrint(billID):
     #print(NotPrint)
     Bill = []
-    uart = serial.Serial("/dev/serial0", baudrate=19200, timeout=3000)
-    ThermalPrinter = adafruit_thermal_printer.get_printer_class(2.69)
-    printer = ThermalPrinter(uart, auto_warm_up=False)
-    printer.warm_up()
-    global billObjects
+    global printer 
+    global ThermalPrinter
     global completeBillList
+    global uart
+    global billObjects
     # not NotPrint
 
     printer.print('Bill Gate`(s)\nGasthaus')
@@ -344,7 +351,6 @@ def PrinterPrint(billID):
     print(billObjects)
     #Go through small array first to find bill, if not in there search big array
     for i in billObjects:
-        print("Hello")
         print(sDBOrderID)
         print(i["_id"])
         if (i['_id'] == sDBOrderID):
@@ -371,8 +377,6 @@ def PrinterPrint(billID):
     #printer.print("Es bedient: " + Bill['waiter'] + " Vielen Dank fuer Ihren Besuch!")
 
 def adjustFormatting(Item):
-                 priceSpaces = "------" #default 6 Spaces
-                 countSpaces = "-----" #default 5 Spaces
                  name = Item['itemName']
                  price = str(Item['itemPriceOne']) + "$"
                  count = str(Item['itemsBought'])
