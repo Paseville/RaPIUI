@@ -361,14 +361,14 @@ def PrinterPrint(billID):
                 updateDatabase(sDBOrderID)
                 printer.print(adjustFormatting(x))
             break
-        if (found == 0):
-              global completeBillList
-              for i in completeBillList:
-                if i["_id"] == sDBOrderID:
-                    Bill = i
-                    for x in Bill['boughtItems']:
-                        printer.print(adjustFormatting(x))
-                    break
+    if (found == 0):
+        global completeBillList
+        for i in completeBillList:
+            if i["_id"] == sDBOrderID:
+                Bill = i
+                for x in Bill['boughtItems']:
+                   printer.print(adjustFormatting(x))
+                break
     printer.print("\nTischnummer: " + str(Bill['tableNumber']))
     printer.print("\nGesamt: " + "{:.2f}".format(Bill["totalBill"]) + "$\n\n\n\n\n")
     #printer.print("\nBezahlt: " + "{:.2f}".format(Bill["totalBill"]))
