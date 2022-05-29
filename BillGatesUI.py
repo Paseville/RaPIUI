@@ -16,6 +16,8 @@ import os.path
 import datetime
 
 ## #########################init printer#########################
+import serial
+import adafruit_thermal_printer
 global printer 
 global ThermalPrinter
 global completeBillList
@@ -26,8 +28,6 @@ printer = ThermalPrinter(uart, auto_warm_up=False)
 printer.warm_up()
 notPrint = False
 ######################################################
-import serial
-import adafruit_thermal_printer
 #define http for requests
 http = urllib3.PoolManager()
 #initalise array which always contains newest bills
