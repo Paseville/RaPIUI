@@ -32,35 +32,44 @@ notPrint = False
 http = urllib3.PoolManager()
 #initalise array which always contains newest bills
 global billObjects
-r = http.request('GET', "https://billgatesprojekt.herokuapp.com/get-all?auth=1234")
-completeBillList = json.loads(r.data.decode('utf-8'))
+global SEE_URL
+global GET_URL
+global GETALL_URL
+global UPDATE_URL
+SEE_URL = "https://billgatesprojekt.herokuapp.com/see/"
+API_KEY = "1234"
+GET_URL =  "https://billgatesprojekt.herokuapp.com/get?auth=1234"
+UPDATE_URL = "https://billgatesprojekt.herokuapp.com/update/"
+GETALL_URL = "https://billgatesprojekt.herokuapp.com/get-all?auth=1234"
+
+#define http for requests
 class WindowMain():
         
     def __init__(self):
-
-        #location of get five newest of api merke http request sollte ein http:// vor den link -.-
-        r = http.request('GET', "https://billgatesprojekt.herokuapp.com/get?auth=1234")
-
-        #parse json file in array of Python dictionaries
-        global billObjects
-        billObjects = json.loads(r.data.decode('utf-8'))
-
-        self.window = tk.Tk()
-        self.window.grid()
-
-        #Check if Database is online and if there are any bills in it
-        if (billObjects != []):
-            for i in range(0, len(billObjects)):
-                # WaiterButton(frame, desc, identifier,row, col) Use object id as identifier                       
-                WaiterButton(self.window, "Table " + str(billObjects[i]["tableNumber"]), billObjects[i]["_id"],i,2)
-        else:
-              w = tk.Label(self.window, text = "No Bills found or Database not online")
-              w.grid(column = 2, row = 3)
-        # padx 20pixel from border
-        self.window.ButtonGetList=tk.Button(self.window, text = 'Liste Anzeigen',height = 3,width = 20,
-                                            command = self.btGetCompleteList).grid(column = 1, row = 3,padx=20)
-        self.window.ButtonReload=tk.Button(self.window, text = 'Aktualisieren', height = 3, width = 20,
-                                           command = self.btReloadWaiterList).grid(column = 3, row = 3,padx=20)
+            global billObjects
+            self.window = tk.Tk()
+            self.window.grid()
+            #getNewData Returns 0 if an exception was thrown
+            if (getNewData() != 0):
+                #Check if Database is online and if there are any bills in it
+                if (billObjects != []):
+                    for i in range(0, len(billObjects)):
+                        # WaiterButton(frame, desc, identifier,row, col) Use object id as identifier                       
+                        WaiterButton(self.window, "Table " + str(billObjects[i]["tableNumber"]), billObjects[i]["_id"],i,2)
+                else:
+                      w = tk.Label(self.window, text = "No Bills found or Database not online")
+                      w.grid(column = 2, row = 3)
+                # padx 20pixel from border
+                self.window.ButtonGetList=tk.Button(self.window, text = 'Liste Anzeigen',height = 3,width = 20,
+                                                    command = self.btGetCompleteList).grid(column = 1, row = 3,padx=20)
+                self.window.ButtonReload=tk.Button(self.window, text = 'Aktualisieren', height = 3, width = 20,
+                                                   command = self.btReloadWaiterList).grid(column = 3, row = 3,padx=20)
+                #Display Connection failed label and a Retry Button
+            else:
+                self.window.btRetry=tk.Button(self.window, text = 'Erneut Versuchen', command = self.fctBtRetry)
+                self.window.btRetry.pack()
+                errorLabel = tk.Label(self.window, text = "No Bills found or Database not online")
+                errorLabel.pack()
                                            
 
     def btGetCompleteList(self):
@@ -78,7 +87,7 @@ class WindowMain():
        
         self.window.title(" Rechnungen")
         # set hardcoded size of the window
-        self.window.geometry('800x480')
+        self.window.attributes("-fullscreen", True)
         self.window.mainloop()
 
     def destroyWindowMain(self):
@@ -88,6 +97,11 @@ class WindowMain():
     def quitWindowMain(self):
         self.window.quit()
         exit()
+
+    def fctBtRetry(self):
+        self.destroyWindowMain()
+        self.__init__()
+        self.runWindowMain()
 #______________________________________________________________________________________________________-
 class WindowSelectQRCodeOrPrint():
     def __init__(self):
@@ -102,7 +116,7 @@ class WindowSelectQRCodeOrPrint():
         self.sBillID=ipTischnr
         self.window.title("Auswahlmenu")
         # set hardcoded size of the window
-        self.window.geometry('800x480')
+        self.window.attributes("-fullscreen", True)
         #self.window.mainloop()
         
     def destroyWindowSelectQRCodeOrPrint(self):
@@ -136,7 +150,7 @@ class WindowSelectQRCodeOrPrint():
 
 
         #generate URL with random autkey as value
-        sAPIHTTPURL= "https://billgatesprojekt.herokuapp.com/see/"+ str(sDBOrderID) + "?auth=" + authkey
+        sAPIHTTPURL= SEE_URL + str(sDBOrderID) + "?auth=" + authkey
         
         # print data on console_scripts
         print("Set URL to see bill to:" + str(sDBOrderID))
@@ -224,7 +238,7 @@ class WindowQRCode():
     def runFrameQrCode(self):
         self.window.title("QR-Code")
         # set hardcoded size of the window
-        self.window.geometry('800x480')
+        self.window.attributes("-fullscreen", True)
         
         ###########################################
         # ERROR: self.window.mainloop()  not required
@@ -246,46 +260,56 @@ class CompleteListWindow():
         self.window = tk.Tk()
         global completeBillList
         #get complete List from Database
-        r = http.request('GET', "https://billgatesprojekt.herokuapp.com/get-all?auth=1234")
-        completeBillList = json.loads(r.data.decode('utf-8'))
-        #create scrollbar for listbox
-        self.scrollBar = tk.Scrollbar(self.window)
-        self.scrollBar.grid(row = 0,column = 1)
-        #create Return Button
-        self.window.ButtonReturn = tk.Button(self.window, text = 'Zurück',height = 3,width = 20, command = self.returnToMainMenu).place(x = 250, y = 375)
-        #create list for items and link scrollbar to it
-        self.liBox = tk.Listbox(self.window, selectmode = tk.SINGLE, yscrollcommand = self.scrollBar.set)
-        #get todays date as string
-        t = datetime.datetime.now()
-        rightTimetoCompare = t - datetime.timedelta(hours=2)
-        dateToday = rightTimetoCompare.strftime("%Y-%m-%d")
-        #add elements to listBox
-        for i in completeBillList:
-            print(i["created_at"][0:10])
-            print(dateToday)
-            if (dateToday[0:10] == i["created_at"][0:10]): #0:10 that only date is compared and not time
-                aSplitted = i["created_at"][11:16].split(":")
-                iHours = int(aSplitted[0])
-                iMinutes = int(aSplitted[1])
-                iHours += 2
-                stringToDisplay =  "Tisch " + str(i["tableNumber"]) + " Time : " + str(iHours) + ":" + str(iMinutes)
-                self.liBox.insert(tk.END, stringToDisplay)
-        self.liBox.grid(row=0, column=0)
-        #add Button for Selecting the currently marked Bill
-        self.selBtn = tk.Button(self.window, text = "Bestätigen", command = self.selectElement)
-        self.selBtn.grid(row=1, column=0)
+        if(getAllData() != 0):
+            #create scrollbar for listbox
+            self.scrollBar = tk.Scrollbar(self.window)
+            self.scrollBar.grid(row = 0,column = 1)
+            #create Return Button
+            self.window.ButtonReturn = tk.Button(self.window, text = 'Zurück',height = 3,width = 20, command = self.returnToMainMenu).place(x = 250, y = 375)
+            #create list for items and link scrollbar to it
+            self.liBox = tk.Listbox(self.window, selectmode = tk.SINGLE, yscrollcommand = self.scrollBar.set)
+            #get todays date as string
+            t = datetime.datetime.now()
+            rightTimetoCompare = t - datetime.timedelta(hours=2)
+            dateToday = rightTimetoCompare.strftime("%Y-%m-%d")
+            #add elements to listBox
+            for i in completeBillList:
+                print(i["created_at"][0:10])
+                print(dateToday)
+                if (dateToday[0:10] == i["created_at"][0:10]): #0:10 that only date is compared and not time
+                    aSplitted = i["created_at"][11:16].split(":")
+                    iHours = int(aSplitted[0])
+                    iMinutes = int(aSplitted[1])
+                    iHours += 2
+                    stringToDisplay =  "Tisch " + str(i["tableNumber"]) + " Time : " + str(iHours) + ":" + str(iMinutes)
+                    self.liBox.insert(tk.END, stringToDisplay)
+            self.liBox.grid(row=0, column=0)
+            #add Button for Selecting the currently marked Bill
+            self.selBtn = tk.Button(self.window, text = "Bestätigen", command = self.selectElement)
+            self.selBtn.grid(row=1, column=0)
+        else:
+            self.window.btRetry=tk.Button(self.window, text = 'Erneut Versuchen', command = self.fctBtRetry)
+            self.window.btRetry.pack()
+            errorLabel = tk.Label(self.window, text = "No Bills found or Database not online")
+            errorLabel.pack()
        
     def runCompleteListWindow(self):
         self.window.title(" Rechnungen")
         # set hardcoded size of the window
-        self.window.geometry('800x480')
-     
+        self.window.attributes("-fullscreen", True)
+        self.window.mainloop()
 
     def returnToMainMenu(self):
         self.window.destroy()
         self.window.quit()
         x = WindowMain()
         x.runWindowMain()
+
+    def fctBtRetry(self):
+        self.window.destroy()
+        self.window.quit()
+        self.__init__()
+        self.runCompleteListWindow()
 
     def selectElement(self):
         selected = self.liBox.curselection()
@@ -298,9 +322,8 @@ class CompleteListWindow():
 
 
 def updateDatabase(billID):
-    print("a request has been sent to https://billgatesprojekt.herokuapp.com/update/" + str(billID) + "?auth=1234")
-    http.request("GET", "https://billgatesprojekt.herokuapp.com/update/" + str(billID) + "?auth=1234")
-
+    print("a request has been sent to https://billgatesprojekt.herokuapp.com/update/" + str(billID))
+    http.request("GET", UPDATE_URL + str(billID) + "?auth="+ API_KEY)
 
 def daytime():
 
@@ -397,7 +420,25 @@ def adjustFormatting(Item):
                  total = total.rjust(7)
                  completeLine = name + price  + count  + total
                  return completeLine
-                        
+def getNewData():
+    global billObjects
+    #initalise array which always contains newest bills
+    billObjects = []
+    try:
+        r = http.request('GET', GET_URL)
+        billObjects = json.loads(r.data.decode('utf-8'))
+        return 1
+    except:
+        return 0
+def getAllData():
+      
+    global completeBillList
+    try:
+        r = http.request('GET', GETALL_URL)
+        completeBillList = json.loads(r.data.decode('utf-8'))
+        return 1
+    except:
+        return 0
  
 if __name__ == "__main__":
     x = WindowMain()
