@@ -25,11 +25,7 @@ global uart
 global completeBillList
 global billObjects
 #Uncommment lines if on PI
-uart = serial.Serial("/dev/serial0", baudrate=19200, timeout=3000)
-ThermalPrinter = adafruit_thermal_printer.get_printer_class(2.69)
-printer = ThermalPrinter(uart, auto_warm_up=False)
-printer.warm_up()
-notPrint = False
+
 ######################################################
 #define http for requests
 http = urllib3.PoolManager()
@@ -379,16 +375,21 @@ def PrinterStart():
 def PrinterPrint(billID):
     #print(NotPrint)
     Bill = []
-    global printer 
-    global ThermalPrinter
-    global completeBillList
-    global uart
-    global billObjects
+    #global printer 
+    #global ThermalPrinter
+    #global completeBillList
+    #global uart
+    #global billObjects
     # not NotPrint
+    uart = serial.Serial("/dev/serial0", baudrate=19200, timeout=3000)
+    ThermalPrinter = adafruit_thermal_printer.get_printer_class(2.69)
+    printer = ThermalPrinter(uart, auto_warm_up=False)
+    printer.warm_up()
+    notPrint = False
 
     printer.print('Bill Gate`(s)\nGasthaus')
 
-    printer.print('-------------------------------\nStr. Adolf-Ley-Straße Nr.6\nPLZ: 97424 Stadt: Schweinfurt\nTel. 0972128704')
+    printer.print('-------------------------------\nStr. Adolf-Ley-Strasse Nr.6\nPLZ: 97424 Stadt: Schweinfurt\nTel. 0972128704')
 
     printer.print('Rechnung')
 
