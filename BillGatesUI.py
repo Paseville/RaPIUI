@@ -420,7 +420,7 @@ def PrinterPrint(billID):
             if i["_id"] == sDBOrderID:
                 Bill = i
                 for x in Bill['boughtItems']:
-                   print(adjustFormatting(x))
+                   printer.print(adjustFormatting(x))
                 break
     #printer.print("\nTischnummer: " + str(Bill['tableNumber']))
     printer.print(Pay.rjust(31) )
