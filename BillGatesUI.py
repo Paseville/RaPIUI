@@ -428,7 +428,7 @@ def PrinterPrint(billID):
     #printer.print("\nBezahlt: " + "{:.2f}".format(Bill["totalBill"]))
 
     # printed text 
-    #printer.print("Es bedient: " + Bill['waiter'] + " Vielen Dank fuer Ihren Besuch!")
+    printer.print("Es bedient: " + Bill['waiter'] + " Vielen Dank fuer Ihren Besuch!/n/n/n/n/n/n")
 
 def adjustFormatting(Item):
                  name = Item['itemName']
