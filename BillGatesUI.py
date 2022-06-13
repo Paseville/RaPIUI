@@ -20,8 +20,11 @@ import serial
 import adafruit_thermal_printer
 global printer 
 global ThermalPrinter
-global completeBillList
 global uart
+#initalise array which always contains newest bills
+global completeBillList
+global billObjects
+#Uncommment lines if on PI
 uart = serial.Serial("/dev/serial0", baudrate=19200, timeout=3000)
 ThermalPrinter = adafruit_thermal_printer.get_printer_class(2.69)
 printer = ThermalPrinter(uart, auto_warm_up=False)
@@ -30,8 +33,7 @@ notPrint = False
 ######################################################
 #define http for requests
 http = urllib3.PoolManager()
-#initalise array which always contains newest bills
-global billObjects
+#define Variables
 global SEE_URL
 global GET_URL
 global GETALL_URL
@@ -42,34 +44,40 @@ GET_URL =  "https://billgatesprojekt.herokuapp.com/get?auth=1234"
 UPDATE_URL = "https://billgatesprojekt.herokuapp.com/update/"
 GETALL_URL = "https://billgatesprojekt.herokuapp.com/get-all?auth=1234"
 
+
 #define http for requests
 class WindowMain():
         
     def __init__(self):
             global billObjects
             self.window = tk.Tk()
-            self.window.grid()
+            self.formattingFrame = tk.Frame(self.window)
+            self.formattingFrame.grid()
             #getNewData Returns 0 if an exception was thrown
             if (getNewData() != 0):
                 #Check if Database is online and if there are any bills in it
                 if (billObjects != []):
                     for i in range(0, len(billObjects)):
                         # WaiterButton(frame, desc, identifier,row, col) Use object id as identifier                       
-                        WaiterButton(self.window, "Table " + str(billObjects[i]["tableNumber"]), billObjects[i]["_id"],i,2)
+                        WaiterButton(self.formattingFrame, "Table " + str(billObjects[i]["tableNumber"]), billObjects[i]["_id"],i,2,self.window)
+                        placeOnWindow(self.window, self.formattingFrame)
+
                 else:
-                      w = tk.Label(self.window, text = "No Bills found or Database not online")
+                      w = tk.Label(self.formattingFrame, text = "No Bills found or Database not online")
                       w.grid(column = 2, row = 3)
                 # padx 20pixel from border
-                self.window.ButtonGetList=tk.Button(self.window, text = 'Liste Anzeigen',height = 3,width = 20,
-                                                    command = self.btGetCompleteList).grid(column = 1, row = 3,padx=20)
-                self.window.ButtonReload=tk.Button(self.window, text = 'Aktualisieren', height = 3, width = 20,
+                self.formattingFrame.ButtonGetList=tk.Button(self.formattingFrame, text = 'Liste Anzeigen',height = 3,width = 20,
+                                                    command = self.btGetCompleteList,).grid(column = 1, row = 3,padx=20)
+                self.formattingFrame.ButtonReload=tk.Button(self.formattingFrame, text = 'Aktualisieren', height = 3, width = 20,
                                                    command = self.btReloadWaiterList).grid(column = 3, row = 3,padx=20)
+                placeOnWindow(self.window, self.formattingFrame)
                 #Display Connection failed label and a Retry Button
             else:
-                self.window.btRetry=tk.Button(self.window, text = 'Erneut Versuchen', command = self.fctBtRetry)
-                self.window.btRetry.pack()
-                errorLabel = tk.Label(self.window, text = "No Bills found or Database not online")
-                errorLabel.pack()
+                self.formattingFrame.btRetry=tk.Button(self.formattingFrame, text = 'Erneut Versuchen', command = self.fctBtRetry)
+                self.formattingFrame.btRetry.place(anchor="c", relx=.5, rely=.5)
+                errorLabel = tk.Label(self.formattingFrame, text = "No Bills found or Database not online")
+                errorLabel.place(anchor="c", relx=.5, rely=.5)
+                placeOnWindow(self.window, self.formattingFrame)
                                            
 
     def btGetCompleteList(self):
@@ -106,10 +114,12 @@ class WindowMain():
 class WindowSelectQRCodeOrPrint():
     def __init__(self):
         self.window=tk.Tk()
-        self.window.grid()
-        self.window.ButtonReturn = tk.Button(self.window, text = 'Zurück',command = self.btReturnToWindowMain, height = 3,width = 20).grid(row = 1, column = 1)
-        self.window.ButtonShowQRCode = tk.Button(self.window, text = 'QR-Code anzeigen',command = self.btShowQRCode,  height = 20, width = 35).grid(row = 2, column = 2)
-        self.window.ButtonPrint = tk.Button(self.window, text = 'Ausdrucken',command = self.btPrintBill, height = 20, width = 35).grid(row = 2, column = 3)
+        self.formattingFrame = tk.Frame(self.window)
+        self.formattingFrame.grid()
+        self.formattingFrame.ButtonReturn = tk.Button(self.formattingFrame, text = 'Zurück',command = self.btReturnToWindowMain, height = 3,width = 20).grid(row = 1, column = 1)
+        self.formattingFrame.ButtonShowQRCode = tk.Button(self.formattingFrame, text = 'QR-Code anzeigen',command = self.btShowQRCode,  height = 20, width = 35).grid(row = 2, column = 2)
+        self.formattingFrame.ButtonPrint = tk.Button(self.formattingFrame, text = 'Ausdrucken',command = self.btPrintBill, height = 20, width = 35).grid(row = 2, column = 3)
+        placeOnWindow(self.window, self.formattingFrame)
 
     def runWindowSelectQRCodeOrPrint(self,ipTischnr):
 
@@ -161,29 +171,32 @@ class WindowSelectQRCodeOrPrint():
         
     def btPrintBill(self):
         global completeBillList
-        print('Event: btShowQRCode')
-        PrinterPrint(self.sBillID) 
+        PrinterPrint(self.sBillID)
+        #PrinterPrint(self.sBillID) 
         self.btReturnToWindowMain()
 
 class WaiterButton():
-    def __init__(self, master=None, pBtdesc=None, pBtNumber=None,pRow=None,pCol=None):
+    def __init__(self, master=None, pBtdesc=None, pBtNumber=None,pRow=None,pCol=None, windowMain=None):
         self.master=master
+        self.windowMain = windowMain
         self.pBtNumber=pBtNumber
         bt=tk.Button(self.master, text=pBtdesc, height = 3,width = 20, command=self.btPressEvent).grid(row=pRow, column=pCol, pady=10,padx=60)
 
     def btPressEvent(self):
         # GetData from Database here
-        self.master.destroy()
+        self.windowMain.destroy()
         x = WindowSelectQRCodeOrPrint()
         x.runWindowSelectQRCodeOrPrint(self.pBtNumber)
-        print('Hallo button pressed:' + str(self.pBtNumber))
+        print('button pressed:' + str(self.pBtNumber))
         
 class WindowQRCode():
     def __init__(self,ipTischnr, sHTTPUrl):
         
         self.iTischnr=ipTischnr
-       
         self.window = tk.Tk()
+        self.formattingFrame = tk.Frame(self.window, width = 800, height = 480)
+        self.formattingFrame.grid()
+        self.buttonFrame=tk.Frame(self.formattingFrame)
         # Creating an instance of QRCode class
         qr = qrcode.QRCode(version = 1,
                    box_size = 7,
@@ -196,7 +209,7 @@ class WindowQRCode():
                     back_color = 'white')
   
         # image filename
-        sQRFile="/home/pi/Desktop/qrcode.png"               
+        sQRFile = "/home/pi/Desktop/qrcode.png"            
         img.save(sQRFile)
       
         if (os.path.exists(sQRFile)==False):
@@ -205,21 +218,23 @@ class WindowQRCode():
             return
         
         #QR code For Testing Implemented here
-        imgQRCode=tk.PhotoImage(file=sQRFile)
+       
+        imgQRCode=tk.PhotoImage(file=sQRFile, master = self.formattingFrame)
          
  
-                        
+                     
         # Create image label to display the image
-        lableQR=tk.Label(self.window,image=imgQRCode)
+        lableQR=tk.Label(master = self.formattingFrame,image=imgQRCode)
         lableQR.imgQRCode=imgQRCode
         # zeige logo an position 0,0 Frame an
-        lableQR.place(x=250,y=75)
+        lableQR.pack(side="top")
         #image1 = tk.PhotoImage(file = "C:\Program Files\TestCode.png")
         #label1 = tk.Label(self.window, image=image1).grid(row = 1, column = 1)
         #__________________________________________________
-        self.window.ButtonReturn = tk.Button(self.window, text = 'Zurück',height = 3,width = 20, command = self.returnSelectQRCodeOrPrint).place(x = 250, y = 375)
-        self.ButtonDone = tk.Button(self.window, text = 'Fertig',height = 3,width = 20, command =self.returnToMainMenu ).place(x = 400, y = 375)
-        
+        self.window.ButtonReturn = tk.Button(self.buttonFrame ,text = 'Zurück',height = 3,width = 20, command = self.returnSelectQRCodeOrPrint).pack(side="left")
+        self.ButtonDone = tk.Button(self.buttonFrame, text = 'Fertig',height = 3,width = 20, command =self.returnToMainMenu ).pack(side="right")
+        self.buttonFrame.pack(side="bottom")
+        placeOnWindow(self.window, self.formattingFrame)
     def returnToMainMenu(self):
         updateDatabase(self.iTischnr)
         self.window.destroy()
@@ -258,16 +273,22 @@ class WindowQRCode():
 class CompleteListWindow():
     def __init__(self):
         self.window = tk.Tk()
+        self.formattingFrame = tk.Frame(self.window, width = 800, height = 480)
+        self.formattingFrame.grid()
+        self.buttonFrame = tk.Frame(self.formattingFrame)
+        self.liboxFrame = tk.Frame(self.formattingFrame)
         global completeBillList
         #get complete List from Database
         if(getAllData() != 0):
             #create scrollbar for listbox
-            self.scrollBar = tk.Scrollbar(self.window)
-            self.scrollBar.grid(row = 0,column = 1)
-            #create Return Button
-            self.window.ButtonReturn = tk.Button(self.window, text = 'Zurück',height = 3,width = 20, command = self.returnToMainMenu).place(x = 250, y = 375)
+            
+            
+            
             #create list for items and link scrollbar to it
-            self.liBox = tk.Listbox(self.window, selectmode = tk.SINGLE, yscrollcommand = self.scrollBar.set)
+            self.liBox = tk.Listbox(self.liboxFrame, selectmode = tk.SINGLE)
+            self.scrollBar = tk.Scrollbar(self.liboxFrame, orient="vertical")
+            self.scrollBar.pack(side="right",fill="y")
+            self.liBox.config(yscrollcommand=self.scrollBar.set)
             #get todays date as string
             t = datetime.datetime.now()
             rightTimetoCompare = t - datetime.timedelta(hours=2)
@@ -283,15 +304,23 @@ class CompleteListWindow():
                     iHours += 2
                     stringToDisplay =  "Tisch " + str(i["tableNumber"]) + " Time : " + str(iHours) + ":" + str(iMinutes)
                     self.liBox.insert(tk.END, stringToDisplay)
-            self.liBox.grid(row=0, column=0)
+            self.liBox.pack(side="left")
+           
+            #create Return Button
+            self.buttonReturn = tk.Button(self.buttonFrame, text = 'Zurück',height = 3,width = 20, command = self.returnToMainMenu)
+            self.buttonReturn.pack(side="left")
             #add Button for Selecting the currently marked Bill
-            self.selBtn = tk.Button(self.window, text = "Bestätigen", command = self.selectElement)
-            self.selBtn.grid(row=1, column=0)
+            self.selBtn = tk.Button(self.buttonFrame, text = "Bestätigen",height = 3,width = 20, command = self.selectElement)
+            self.selBtn.pack(side="right")
+            self.buttonFrame.pack(side="bottom")
+            self.liboxFrame.pack(side="top")
+            placeOnWindow(self.window, self.formattingFrame)
         else:
-            self.window.btRetry=tk.Button(self.window, text = 'Erneut Versuchen', command = self.fctBtRetry)
-            self.window.btRetry.pack()
+            self.formattingFrame.btRetry=tk.Button(self.window, text = 'Erneut Versuchen', command = self.fctBtRetry)
+            self.formattingFrame.btRetry.pack()
             errorLabel = tk.Label(self.window, text = "No Bills found or Database not online")
             errorLabel.pack()
+            placeOnWindow(self.window, self.formattingFrame)
        
     def runCompleteListWindow(self):
         self.window.title(" Rechnungen")
@@ -359,7 +388,7 @@ def PrinterPrint(billID):
 
     printer.print('Bill Gate`(s)\nGasthaus')
 
-    # printer.print('-------------------------------\nStr. Adolf-Ley-Straße Nr.6\nPLZ: 97424 Stadt: Schweinfurt\nTel. 0972128704')
+    printer.print('-------------------------------\nStr. Adolf-Ley-Straße Nr.6\nPLZ: 97424 Stadt: Schweinfurt\nTel. 0972128704')
 
     printer.print('Rechnung')
 
@@ -379,10 +408,11 @@ def PrinterPrint(billID):
         if (i['_id'] == sDBOrderID):
             found = 1
             Bill = i
+            updateDatabase(sDBOrderID)
             for x in Bill['boughtItems']:
-                Pay = Bill['totalBill']
-                updateDatabase(sDBOrderID)
-                printer.print(adjustFormatting(x))
+                Pay = str(Bill['totalBill']) + "$"
+                printer.print(adjustFormatting)
+                # print(adjustFormatting(x))
             break
     if (found == 0):
         global completeBillList
@@ -390,10 +420,10 @@ def PrinterPrint(billID):
             if i["_id"] == sDBOrderID:
                 Bill = i
                 for x in Bill['boughtItems']:
-                   printer.print(adjustFormatting(x))
+                   print(adjustFormatting(x))
                 break
-    printer.print("\nTischnummer: " + str(Bill['tableNumber']))
-    printer.print("\nGesamt: " + "{:.2f}".format(Bill["totalBill"]) + "$\n\n\n\n\n")
+    #printer.print("\nTischnummer: " + str(Bill['tableNumber']))
+    printer.print(Pay.rjust(31) )
     #printer.print("\nBezahlt: " + "{:.2f}".format(Bill["totalBill"]))
 
     # printed text 
@@ -439,6 +469,8 @@ def getAllData():
         return 1
     except:
         return 0
+def placeOnWindow(masterWindow, childWindow):
+    childWindow.place(in_=masterWindow, anchor="c", relx=.5, rely = .5)
  
 if __name__ == "__main__":
     x = WindowMain()
