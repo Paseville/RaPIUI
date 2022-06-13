@@ -412,7 +412,7 @@ def PrinterPrint(billID):
             updateDatabase(sDBOrderID)
             for x in Bill['boughtItems']:
                 Pay = str(Bill['totalBill']) + "$"
-                printer.print(adjustFormatting)
+                printer.print(adjustFormatting(x))
                 # print(adjustFormatting(x))
             break
     if (found == 0):
