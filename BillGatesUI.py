@@ -112,7 +112,7 @@ class WindowSelectQRCodeOrPrint():
         self.window=tk.Tk()
         self.formattingFrame = tk.Frame(self.window)
         self.formattingFrame.grid()
-        self.formattingFrame.ButtonReturn = tk.Button(self.formattingFrame, text = 'Zurück',command = self.btReturnToWindowMain, height = 3,width = 20).grid(row = 1, column = 1)
+        self.formattingFrame.ButtonReturn = tk.Button(self.formattingFrame, text = 'Zurueck',command = self.btReturnToWindowMain, height = 3,width = 20).grid(row = 1, column = 1)
         self.formattingFrame.ButtonShowQRCode = tk.Button(self.formattingFrame, text = 'QR-Code anzeigen',command = self.btShowQRCode,  height = 20, width = 35).grid(row = 2, column = 2)
         self.formattingFrame.ButtonPrint = tk.Button(self.formattingFrame, text = 'Ausdrucken',command = self.btPrintBill, height = 20, width = 35).grid(row = 2, column = 3)
         placeOnWindow(self.window, self.formattingFrame)
@@ -227,7 +227,7 @@ class WindowQRCode():
         #image1 = tk.PhotoImage(file = "C:\Program Files\TestCode.png")
         #label1 = tk.Label(self.window, image=image1).grid(row = 1, column = 1)
         #__________________________________________________
-        self.window.ButtonReturn = tk.Button(self.buttonFrame ,text = 'Zurück',height = 3,width = 20, command = self.returnSelectQRCodeOrPrint).pack(side="left")
+        self.window.ButtonReturn = tk.Button(self.buttonFrame ,text = 'Zurueck',height = 3,width = 20, command = self.returnSelectQRCodeOrPrint).pack(side="left")
         self.ButtonDone = tk.Button(self.buttonFrame, text = 'Fertig',height = 3,width = 20, command =self.returnToMainMenu ).pack(side="right")
         self.buttonFrame.pack(side="bottom")
         placeOnWindow(self.window, self.formattingFrame)
@@ -303,10 +303,10 @@ class CompleteListWindow():
             self.liBox.pack(side="left")
            
             #create Return Button
-            self.buttonReturn = tk.Button(self.buttonFrame, text = 'Zurück',height = 3,width = 20, command = self.returnToMainMenu)
+            self.buttonReturn = tk.Button(self.buttonFrame, text = 'Zurueck',height = 3,width = 20, command = self.returnToMainMenu)
             self.buttonReturn.pack(side="left")
             #add Button for Selecting the currently marked Bill
-            self.selBtn = tk.Button(self.buttonFrame, text = "Bestätigen",height = 3,width = 20, command = self.selectElement)
+            self.selBtn = tk.Button(self.buttonFrame, text = "Bestaetigen",height = 3,width = 20, command = self.selectElement)
             self.selBtn.pack(side="right")
             self.buttonFrame.pack(side="bottom")
             self.liboxFrame.pack(side="top")
