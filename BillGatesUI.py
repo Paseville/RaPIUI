@@ -35,10 +35,10 @@ global GET_URL
 global GETALL_URL
 global UPDATE_URL
 SEE_URL = "https://billgatesprojekt.herokuapp.com/see/"
-API_KEY = "1234"
-GET_URL =  "https://billgatesprojekt.herokuapp.com/get?auth=1234"
+API_KEY = "123581237586908832849"
+GET_URL =  "https://billgatesprojekt.herokuapp.com/get?auth=123581237586908832849"
 UPDATE_URL = "https://billgatesprojekt.herokuapp.com/update/"
-GETALL_URL = "https://billgatesprojekt.herokuapp.com/get-all?auth=1234"
+GETALL_URL = "https://billgatesprojekt.herokuapp.com/get-all?auth=123581237586908832849"
 
 
 #define http for requests
