@@ -7,16 +7,16 @@ import time
 randomitems = ["Bayreuther", "Weizen", "Limo", "Cola", "Sprite", "Bionade", "Desperados", "Cocktail", "Longdrink", "Shot", "Salat", "Currywurst", "Nachos", "Wrap", "Pizza"]
 
 #generate 10 bills
-for x in range(10):
+for x in range(15):
 	arrayItems = []
 	totalBill = 0
 	
 	#for each bill generate random amount of items bought
 	usedItems = ["m"]
-	for x in range(random.randint(1,9)):
+	for x in range(random.randint(4,10)):
 		while (1):
 			foundName = 0
-			itemName = randomitems[random.randint(0,14)]
+			itemName = randomitems[random.randint(1,14)] 
 			for x in usedItems:
 				if(x == itemName):
 					foundName = 1
@@ -25,8 +25,8 @@ for x in range(10):
 				usedItems.append(itemName)
 				break
 		#make sure each itemName only appears once in 
-		priceOne = random.randint(1,10)
-		itemsBought = random.randint(0,10)
+		priceOne = random.randint(5,11)
+		itemsBought = random.randint(3,10)
 		priceAll = priceOne * itemsBought
 		totalBill += priceAll
 		oneItem = {
@@ -37,7 +37,7 @@ for x in range(10):
 			}
 		arrayItems.append(oneItem)
 	answers = {
-		"tableNumber": random.randint(0,50),
+		"tableNumber": random.randint(1,50),
 		"randomAuthKey": str(round(time.time()* 100000)),
 		"done": 0,
 		"boughtItems": arrayItems,
